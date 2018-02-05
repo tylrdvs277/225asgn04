@@ -11,13 +11,18 @@
 ;       
 
             .ORIG       x3300
-
+;
+; Stores all the registers needed for the trap
+;
             ST          R1, StoreR1
             ST          R2, StoreR2
             ST          R3, StoreR3
             ST          R4, StoreR4
 
             ADD         R1, R0, #0
+;
+; Polls the keyboard status register
+;
 Start       LDI         R2, KBSR
             BRzp        Start
             LDI         R3, KBDR
@@ -25,11 +30,18 @@ Start       LDI         R2, KBSR
             BRz         Done
             STR         R3, R1, #0
             ADD         R1, R1, #1
+;
+; Polls the device status register
+; Only outputs if character is not
+; x000A (LF)
+;
 Output      LDI         R2, DSR
             BRzp        Output
             STI         R3, DDR
             BRnzp       Start
-
+;
+; Restores all the registers
+;
 Done        STR         R4, R1, #0
             LD          R1, StoreR1
             LD          R2, StoreR2

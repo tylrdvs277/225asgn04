@@ -1,3 +1,4 @@
+;
 ; Name: Tyler Davis
 ;
 ; Main Loop
@@ -10,12 +11,18 @@
 ;           R4: Question Countdown
 ;
                 .ORIG       x3000
-
+;
+; Loads the registers needed to output the Qs
+;
 Quiz            AND         R3, R3, #0
                 ADD         R4, R3, #3
                 LEA         R1, Q1
                 LEA         R2, Q1Point
-
+;
+; Main loop that outputs the questions and calls
+; the subroutines to get the typed characters and
+; determine the points
+;
 NextQ           ST          R1, StoreR1
                 LDR         R1, R1, #0
                 JSR         GetChar
@@ -27,6 +34,10 @@ NextQ           ST          R1, StoreR1
                 ADD         R2, R2, #1
                 ADD         R4, R4, #-1
                 BRnp        NextQ
+;
+; After all questions have been answered, calls
+; subroutine to output the correct message
+;
                 LEA         R0, Result1
                 LEA         R1, Range1
                 JSR         OutputMsg
@@ -49,6 +60,10 @@ Result3         .FILL       x3463
 Result4         .FILL       x3482
 ;
 ; Get Character Subroutine
+;
+; Prints out the question and then prompts the user to
+; enter a single character (1-4), this value is converted
+; from an ASCII value to a hex value
 ;
 ; Registers R0: Used to output string and store input
 ;           R1: Contains the address of the question
@@ -74,6 +89,9 @@ ASCIIConvert    .FILL       #-48
 ;
 ; Get Points From the Answer Subroutine
 ;
+; Using the user's answer, this determines the amount of
+; points (points stored in data.asm)
+;
 ; Registers R0: Contains the numeric value of the input
 ;           R1: Address of the point valuse (for each answer)
 ;
@@ -84,6 +102,10 @@ GetPoints       ADD         R1, R1, #1
                 RET
 ;
 ; Output End of Quiz Message Subroutine
+;
+; Using the users score and the upper end of the point range
+; (stored in data.asm) ouputs the appropriate message (also
+; in data.asm)
 ;
 ; Registers R0: Contains addresses of the address lookups
 ;               and the string to output
