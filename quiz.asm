@@ -1,3 +1,14 @@
+; Name: Tyler Davis
+;
+; Main Loop
+;
+; Register  R0: Inputing and outputing characters
+;           R1: Storing the Address of the memmory
+;               slot containing target addresses
+;           R2: More address storage
+;           R3: Total points
+;           R4: Question Countdown
+;
                 .ORIG       x3000
 
 Quiz            AND         R3, R3, #0
@@ -36,7 +47,15 @@ Result1         .FILL       x3431
 Result2         .FILL       x3448
 Result3         .FILL       x3463
 Result4         .FILL       x3482
-
+;
+; Get Character Subroutine
+;
+; Registers R0: Used to output string and store input
+;           R1: Contains the address of the question
+;           R5: The offset to convert ASCII value to
+;               the actual number
+;           R7: Return addresses
+;
 GetChar         ADD         R0, R1, #0
                 ST          R7, StoreR7
                 PUTS
@@ -52,13 +71,28 @@ GetChar         ADD         R0, R1, #0
 StoreR5         .FILL       0
 StoreR7         .FILL       0
 ASCIIConvert    .FILL       #-48
-
+;
+; Get Points From the Answer Subroutine
+;
+; Registers R0: Contains the numeric value of the input
+;           R1: Address of the point valuse (for each answer)
+;
 GetPoints       ADD         R1, R1, #1
                 ADD         R0, R0, #-1
                 BRnp        GetPoints
                 LDR         R0, R1, #-1
                 RET
-
+;
+; Output End of Quiz Message Subroutine
+;
+; Registers R0: Contains addresses of the address lookups
+;               and the string to output
+;           R1: Contains the lookup address fo the top of 
+;               the score range
+;           R2: The top of the points range for a message
+;           R3: The user's score
+;           R7: Stores return addresses
+;
 OutputMsg       ST          R2, StoreR2
 NextRange       LDR         R2, R1, #0
                 LDR         R2, R2, #0

@@ -1,11 +1,21 @@
+; Name: Tyler Davis
+;
+; 1) The KSBR interrupt is not enable (bit[14] set to 0)
+;
+; 2) Trap Out (polling) 1:  Stores away R1
+;                       2:  Loads the DSR into R1
+;                       3:  Loops again if bit[15] isn't set
+;                       4:  Puts the character in DDR
+;                       5:  Loads back R1
+;                       6:  Returns
+;       
+
             .ORIG       x3300
 
             ST          R1, StoreR1
             ST          R2, StoreR2
             ST          R3, StoreR3
             ST          R4, StoreR4
-
-
 
             ADD         R1, R0, #0
 Start       LDI         R2, KBSR
